@@ -219,7 +219,7 @@
                 </div>
 
                 <!-- Форма отправки -->
-                <form method="post" action="{% url 'users:save_button_choice' %}" id="choiceForm">
+                <form method="post" action="{% url 'users:save_user_request' %}" id="choiceForm">
                     {% csrf_token %}
                     <input type="hidden" name="button_value" id="buttonValue" value="">
                     <button type="submit" class="submit-btn" id="submitBtn" disabled>

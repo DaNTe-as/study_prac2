@@ -34,10 +34,10 @@ def login_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, 'users/test.html', {'user': request.user})
+    return render(request, 'users/dashboard.html', {'user': request.user})
 
 @login_required
-def save_button_choice(request):
+def save_user_request(request):
     """Сохранение выбранной кнопки в БД"""
     if request.method == 'POST':
         button_value = request.POST.get('button_value')

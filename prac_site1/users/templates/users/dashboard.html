@@ -46,18 +46,21 @@
                     <div class="selector-header">
                         <span>Выберите модель для сравнения:</span>
                         <div class="selector-tabs">
-                            <button class="selector-tab active" data-embedder="sbert" data-type="text">
+                            <button type="button" class="selector-tab choice-btn" data-value="1" data-type="text">
                                 1
                             </button>
-                            <button class="selector-tab" data-embedder="labse" data-type="text">
+                            <button type="button" class="selector-tab choice-btn" data-value="2" data-type="text">
                                 2
                             </button>
-                            <button class="selector-tab" data-embedder="minilm" data-type="text">
+                            <button type="button" class="selector-tab choice-btn" data-value="3" data-type="text">
                                 3
                             </button>
-                            <button class="selector-tab" data-embedder="clip" data-type="image">
+                            <button type="button" class="selector-tab choice-btn" data-value="4" data-type="image">
                                 4 (изображения)
                             </button>
+                        </div>
+                        <div class="selected-info">
+                            <p>Активная кнопка: <span class="selected-number" id="selectedNumber">—</span></p>
                         </div>
                     </div>
                 </div>
@@ -69,6 +72,13 @@
                     <span>.docx, .txt, .png, .jpg, .py</span>
                     <input type="file" id="quickFileInput" style="display: none;" accept=".docx,.png,.jpg,.jpeg,.py,.txt,text/plain,image/*">
                 </div>
+                <form method="post" action="{% url 'users:save_user_request' %}" id="choiceForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="button_value" id="buttonValue" value="">
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                        Отправить
+                    </button>
+                </form>
             </div>
 
             <div class="history-section">
@@ -247,5 +257,54 @@
             </div>
         </div>
     </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.choice-btn');
+            const selectedNumberSpan = document.getElementById('selectedNumber');
+            const buttonValueInput = document.getElementById('buttonValue');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            let activeButton = null;
+            
+            // Функция активации кнопки
+            function activateButton(button) {
+                // Убираем активный класс у всех кнопок
+                buttons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Добавляем активный класс выбранной кнопке
+                button.classList.add('active');
+                
+                // Получаем значение
+                const value = button.getAttribute('data-value');
+                
+                // Обновляем отображение
+                selectedNumberSpan.textContent = value;
+                buttonValueInput.value = value;
+                
+                // Активируем кнопку отправки
+                submitBtn.disabled = false;
+                
+                // Сохраняем активную кнопку
+                activeButton = button;
+            }
+            
+            // Обработка нажатия на кнопки
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    activateButton(this);
+                });
+            });
+            
+            // Предотвращение отправки пустой формы
+            document.getElementById('choiceForm').addEventListener('submit', function(e) {
+                if (!buttonValueInput.value) {
+                    e.preventDefault();
+                    alert('Пожалуйста, выберите кнопку');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
