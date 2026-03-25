@@ -1,8 +1,10 @@
+<!-- templates/button_choice.html -->
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Выбор кнопки</title>
+    <title>Выбор кнопки и файла</title>
     <style>
         * {
             margin: 0;
@@ -125,6 +127,167 @@
             margin-left: 10px;
         }
 
+        /* Стили для загрузки файла */
+        .file-upload {
+            margin-bottom: 30px;
+        }
+
+        .file-upload label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #6c757d;
+        }
+
+        .file-label:hover {
+            border-color: #667eea;
+            background: #f1f3f5;
+            color: #667eea;
+        }
+
+        .file-label i {
+            font-size: 20px;
+        }
+
+        /* Карточка выбранного файла */
+        .file-preview {
+            margin-top: 20px;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            border: 1px solid #dee2e6;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .file-preview-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .file-icon {
+            font-size: 32px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: #6c757d;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .file-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            transition: all 0.2s;
+        }
+
+        .remove-file {
+            color: #dc3545;
+        }
+
+        .remove-file:hover {
+            transform: scale(1.1);
+            color: #c82333;
+        }
+
+        /* Превью для изображений */
+        .image-preview {
+            margin-top: 12px;
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Детальная информация о файле */
+        .file-details {
+            margin-top: 12px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .file-detail {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
         .submit-btn {
             width: 100%;
             padding: 15px;
@@ -147,6 +310,12 @@
             transform: translateY(0);
         }
 
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .alert {
             padding: 12px 20px;
             border-radius: 10px;
@@ -166,6 +335,13 @@
             border: 1px solid #f5c6cb;
         }
 
+        .text-muted {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 8px;
+            display: block;
+        }
+
         @media (max-width: 640px) {
             .choice-btn {
                 width: 80px;
@@ -180,6 +356,11 @@
             .selected-number {
                 font-size: 28px;
             }
+            
+            .file-preview-header {
+                flex-direction: column;
+                text-align: center;
+            }
         }
     </style>
 </head>
@@ -187,13 +368,13 @@
     <div class="container">
         <div class="card">
             <div class="card-header">
-                <h1>Выберите кнопку</h1>
-                <p>Нажмите на одну из кнопок ниже</p>
+                <h1>Выберите кнопку и загрузите файл</h1>
+                <p>Нажмите на одну из кнопок и выберите файл</p>
             </div>
             <div class="card-body">
                 <!-- Информация о пользователе -->
                 <div class="user-info">
-                    <p>👤 Вы авторизованы как: <strong>{{ request.user.email }}</strong> ({{ request.user.first_name }})</p>
+                    <p>👤 Вы авторизованы как: <strong>{{ user.email }}</strong> ({{ user.first_name }})</p>
                 </div>
 
                 <!-- Сообщения -->
@@ -205,23 +386,72 @@
                     {% endfor %}
                 {% endif %}
 
-                <!-- Кнопки выбора -->
-                <div class="buttons-container">
-                    <button type="button" class="choice-btn" data-value="1">1</button>
-                    <button type="button" class="choice-btn" data-value="2">2</button>
-                    <button type="button" class="choice-btn" data-value="3">3</button>
-                    <button type="button" class="choice-btn" data-value="4">4</button>
-                </div>
-
-                <!-- Отображение выбранной кнопки -->
-                <div class="selected-info">
-                    <p>Активная кнопка: <span class="selected-number" id="selectedNumber">—</span></p>
-                </div>
-
-                <!-- Форма отправки -->
-                <form method="post" action="{% url 'users:save_user_request' %}" id="choiceForm">
+                <form method="post" action="{% url 'save_user_request' %}" enctype="multipart/form-data" id="choiceForm">
                     {% csrf_token %}
+                    
+                    <!-- Кнопки выбора -->
+                    <div class="buttons-container">
+                        <button type="button" class="choice-btn" data-value="1">1</button>
+                        <button type="button" class="choice-btn" data-value="2">2</button>
+                        <button type="button" class="choice-btn" data-value="3">3</button>
+                        <button type="button" class="choice-btn" data-value="4">4</button>
+                    </div>
+
+                    <!-- Отображение выбранной кнопки -->
+                    <div class="selected-info">
+                        <p>Активная кнопка: <span class="selected-number" id="selectedNumber">—</span></p>
+                    </div>
+
+                    <!-- Загрузка файла -->
+                    <div class="file-upload">
+                        <label>📎 Загрузить файл (необязательно)</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" name="file" id="quickFileInput" class="file-input" required accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.xls,.xlsx">
+                            <label for="fileInput" class="file-label">
+                                <i>📁</i>
+                                <span id="fileLabelText">Выберите файл</span>
+                            </label>
+                        </div>
+                        
+                        <!-- Карточка предпросмотра файла -->
+                        <div id="filePreview" class="file-preview">
+                            <div class="file-preview-header">
+                                <div class="file-icon" id="fileIcon">📄</div>
+                                <div class="file-info">
+                                    <div class="file-name" id="previewFileName"></div>
+                                    <div class="file-meta">
+                                        <span id="previewFileSize"></span>
+                                        <span id="previewFileType"></span>
+                                    </div>
+                                </div>
+                                <div class="file-actions">
+                                    <button type="button" class="remove-file" id="removeFileBtn" title="Удалить файл">
+                                        ❌
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="imagePreviewContainer" class="image-preview" style="display: none;">
+                                <img id="imagePreview" src="" alt="Предпросмотр">
+                            </div>
+                            <div class="file-details">
+                                <div class="file-detail">
+                                    <span>📅 Дата: <span id="previewFileDate"></span></span>
+                                </div>
+                                <div class="file-detail">
+                                    <span>🔤 Имя: <span id="previewFileOriginalName"></span></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <small class="text-muted">
+                            Поддерживаемые форматы: PDF, DOC, DOCX, TXT, JPG, PNG, GIF, XLS, XLSX
+                        </small>
+                    </div>
+
+                    <!-- Скрытое поле для значения кнопки -->
                     <input type="hidden" name="button_value" id="buttonValue" value="">
+                    
+                    <!-- Кнопка отправки -->
                     <button type="submit" class="submit-btn" id="submitBtn" disabled>
                         Отправить
                     </button>
@@ -231,53 +461,135 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const buttons = document.querySelectorAll('.choice-btn');
-            const selectedNumberSpan = document.getElementById('selectedNumber');
-            const buttonValueInput = document.getElementById('buttonValue');
-            const submitBtn = document.getElementById('submitBtn');
-            
-            let activeButton = null;
-            
-            // Функция активации кнопки
-            function activateButton(button) {
-                // Убираем активный класс у всех кнопок
-                buttons.forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Добавляем активный класс выбранной кнопке
-                button.classList.add('active');
-                
-                // Получаем значение
-                const value = button.getAttribute('data-value');
-                
-                // Обновляем отображение
-                selectedNumberSpan.textContent = value;
-                buttonValueInput.value = value;
-                
-                // Активируем кнопку отправки
-                submitBtn.disabled = false;
-                
-                // Сохраняем активную кнопку
-                activeButton = button;
-            }
-            
-            // Обработка нажатия на кнопки
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    activateButton(this);
-                });
+        const quickUploadBox = document.getElementById('quickUploadBox');
+        const quickFileInput = document.getElementById('quickFileInput'); // Исправлено: теперь правильный ID
+    
+        if (quickUploadBox && quickFileInput) {
+            quickUploadBox.addEventListener('click', () => {
+                quickFileInput.click(); // Теперь работает
             });
-            
-            // Предотвращение отправки пустой формы
-            document.getElementById('choiceForm').addEventListener('submit', function(e) {
-                if (!buttonValueInput.value) {
-                    e.preventDefault();
-                    alert('Пожалуйста, выберите кнопку');
+    
+            quickUploadBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                quickUploadBox.style.borderColor = '#667eea';
+                quickUploadBox.style.background = 'rgba(102, 126, 234, 0.1)';
+            });
+    
+            quickUploadBox.addEventListener('dragleave', () => {
+                quickUploadBox.style.borderColor = '#dee2e6';
+                quickUploadBox.style.background = '#f8f9fa';
+            });
+    
+            quickUploadBox.addEventListener('drop', (e) => {
+                e.preventDefault();
+                quickUploadBox.style.borderColor = '#dee2e6';
+                quickUploadBox.style.background = '#f8f9fa';
+                
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    // Сохраняем файл в input
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    quickFileInput.files = dataTransfer.files;
+                    
+                    // Показываем информацию о файле
+                    showFileInfo(file);
                 }
             });
-        });
+    
+            quickFileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    showFileInfo(file);
+                }
+            });
+        }
+        
+        // Функция отображения информации о файле
+        function showFileInfo(file) {
+            const uploadBox = document.querySelector('.mini-upload-box');
+            const fileSize = formatFileSize(file.size);
+            
+            // Создаем или обновляем элемент с информацией о файле
+            let fileInfo = document.getElementById('fileInfo');
+            if (!fileInfo) {
+                fileInfo = document.createElement('div');
+                fileInfo.id = 'fileInfo';
+                fileInfo.className = 'file-info-preview';
+                uploadBox.appendChild(fileInfo);
+            }
+            
+            fileInfo.innerHTML = `
+                <div style="margin-top: 15px; padding: 10px; background: #e9ecef; border-radius: 8px;">
+                    <strong>✅ Выбран файл:</strong><br>
+                    📄 ${file.name}<br>
+                    📊 ${fileSize}
+                </div>
+            `;
+            
+            // Активируем кнопку отправки, если выбрана и кнопка, и файл
+            checkSubmitButton();
+        }
+        
+        // Форматирование размера файла
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 байт';
+            const k = 1024;
+            const sizes = ['байт', 'КБ', 'МБ', 'ГБ'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Код для работы с кнопками
+        const buttons = document.querySelectorAll('.choice-btn');
+        const selectedNumberSpan = document.getElementById('selectedNumber');
+        const buttonValueInput = document.getElementById('buttonValue');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Функция проверки возможности отправки
+        function checkSubmitButton() {
+            const isButtonSelected = buttonValueInput.value !== '';
+            const isFileSelected = quickFileInput && quickFileInput.files && quickFileInput.files.length > 0;
+            if (submitBtn) {
+                submitBtn.disabled = !(isButtonSelected && isFileSelected);
+            }
+        }
+        
+        // Обработка выбора кнопки
+        if (buttons) {
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Убираем активный класс у всех кнопок
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс нажатой кнопке
+                    this.classList.add('active');
+                    
+                    const value = this.getAttribute('data-value');
+                    if (selectedNumberSpan) selectedNumberSpan.textContent = value;
+                    if (buttonValueInput) buttonValueInput.value = value;
+                    
+                    checkSubmitButton();
+                });
+            });
+        }
+        
+        // Предотвращение отправки без выбора
+        const choiceForm = document.getElementById('choiceForm');
+        if (choiceForm) {
+            choiceForm.addEventListener('submit', function(e) {
+                if (!buttonValueInput || !buttonValueInput.value) {
+                    e.preventDefault();
+                    alert('Пожалуйста, выберите кнопку');
+                    return false;
+                }
+                
+                if (!quickFileInput || !quickFileInput.files || quickFileInput.files.length === 0) {
+                    e.preventDefault();
+                    alert('Пожалуйста, выберите файл');
+                    return false;
+                }
+            });
+        }
     </script>
 </body>
 </html>

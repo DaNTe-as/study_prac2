@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.html import strip_tags
+import os
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, first_name, password=None,**extra_fields):
@@ -34,6 +35,9 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+def user_file_upload_path(instance, filename):
+    """Генерация пути для сохранения файла"""
+    return os.path.join('user_files', filename)
 
 class UserButtonChoice(models.Model):
     """Модель для хранения выбора пользователя"""
@@ -51,6 +55,13 @@ class UserButtonChoice(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Дата и время создания"
+    )
+    
+    file = models.FileField(
+        upload_to=user_file_upload_path,
+        verbose_name="Загруженный файл",
+        blank=True,
+        null=True
     )
     
     class Meta:

@@ -1,5 +1,7 @@
 from django.urls import path
-from .  import views
+from django.conf import settings
+from django.conf.urls.static import static
+from . import views
 
 app_name = 'users'
  
@@ -10,3 +12,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('save/', views.save_user_request, name='save_user_request'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

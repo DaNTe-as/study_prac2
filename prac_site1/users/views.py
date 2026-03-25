@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
-from .forms import CustomUserCreationForm, CustomUserLoginForm, UserButtonChoice
+from .forms import CustomUserCreationForm, CustomUserLoginForm, UserButtonChoice, UserButtonChoiceForm
 from .models import CustomUser 
 from django.contrib import messages
 
@@ -34,22 +34,34 @@ def login_view(request):
 
 @login_required
 def profile_view(request):
-    return render(request, 'users/dashboard.html', {'user': request.user})
+    form = UserButtonChoiceForm()
+    return render(request, 'users/dashboard.html', {'user': request.user, 'form': form})
 
 @login_required
 def save_user_request(request):
     """Сохранение выбранной кнопки в БД"""
     if request.method == 'POST':
-        button_value = request.POST.get('button_value')
+        form = UserButtonChoiceForm(request.POST, request.FILES)
         
-        if button_value and button_value in ['1', '2', '3', '4']:
-            UserButtonChoice.objects.create(
+        if form.is_valid():
+            button_value = form.cleaned_data.get('button_value')
+            file = form.cleaned_data.get('file')
+            
+            # Сохраняем в базу данных
+            choice = UserButtonChoice(
                 user=request.user,
-                button_value=int(button_value)
+                button_value=button_value,
+                file=file
             )
-            messages.success(request, f'Кнопка {button_value} успешно сохранена!')
+            choice.save()
+            
+            if file:
+                messages.success(request, f'Кнопка {button_value} и файл "{file.name}" успешно сохранены!')
+            else:
+                messages.success(request, f'Кнопка {button_value} успешно сохранена!')
         else:
-            messages.error(request, 'Пожалуйста, выберите кнопку')
+            for error in form.errors.values():
+                messages.error(request, error)
         
         return redirect('users:profile')
     

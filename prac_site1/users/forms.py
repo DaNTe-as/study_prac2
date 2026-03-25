@@ -51,4 +51,20 @@ from .models import UserButtonChoice
 class UserButtonChoiceForm(forms.ModelForm):
     class Meta:
         model = UserButtonChoice
-        fields = ['button_value']
+        fields = ['button_value', 'file']
+    
+    def clean_file(self):
+        file = self.cleaned_data.get('file')
+        
+        if not file:
+            raise forms.ValidationError('Пожалуйста, загрузите файл')
+        
+
+        ext = file.name.split('.')[-1].lower()
+        allowed_extensions = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png', 'gif', 'xls', 'xlsx']
+        if ext not in allowed_extensions:
+            raise forms.ValidationError(
+                f'Неподдерживаемый тип файла. Разрешены: {", ".join(allowed_extensions)}'
+            )
+        
+        return file

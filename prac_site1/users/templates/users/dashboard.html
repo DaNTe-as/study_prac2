@@ -1,5 +1,5 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -23,7 +23,7 @@
             <div class="dashboard-header">
                 <div class="welcome-section">
                     <h1>Личный кабинет</h1>
-                    <p>{{request.user.first_name}}</p>
+                    <p>{{ request.user.first_name }}</p>
                 </div>
                 <div class="user-stats">
                     <div class="stat-item">
@@ -42,7 +42,7 @@
             </div>
             <div class="quick-upload">
                 <h2>Быстрая проверка</h2>
-                                <div class="embedder-selector">
+                <div class="embedder-selector">
                     <div class="selector-header">
                         <span>Выберите модель для сравнения:</span>
                         <div class="selector-tabs">
@@ -59,21 +59,49 @@
                                 4 (изображения)
                             </button>
                         </div>
-                        <div class="selected-info">
-                            <p>Активная кнопка: <span class="selected-number" id="selectedNumber">—</span></p>
-                        </div>
                     </div>
                 </div>
-                <div class="mini-upload-box" id="quickUploadBox">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                    </svg>
-                    <p>Перетащите файл сюда или кликните для выбора</p>
-                    <span>.docx, .txt, .png, .jpg, .py</span>
-                    <input type="file" id="quickFileInput" style="display: none;" accept=".docx,.png,.jpg,.jpeg,.py,.txt,text/plain,image/*">
-                </div>
-                <form method="post" action="{% url 'users:save_user_request' %}" id="choiceForm">
+                <form method="post" action="{% url 'users:save_user_request' %}" enctype="multipart/form-data" id="choiceForm">
                     {% csrf_token %}
+                    <div class="mini-upload-box" id="quickUploadBox">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                        </svg>
+                        <p>Перетащите файл сюда или кликните для выбора</p>
+                        <span id="allowedTypesHint">.txt, .docx, .pdf, .py</span>
+                        <input type="file" name="file" id="fileInput" style="display: none;" accept="" required>
+                    </div>
+                    
+                    <!-- Карточка предпросмотра файла -->
+                    <div id="filePreview" class="file-preview">
+                        <div class="file-preview-header">
+                            <div class="file-icon" id="fileIcon">📄</div>
+                            <div class="file-info">
+                                <div class="file-name" id="previewFileName"></div>
+                                <div class="file-meta">
+                                    <span id="previewFileSize"></span>
+                                    <span id="previewFileType"></span>
+                                </div>
+                            </div>
+                            <div class="file-actions">
+                                <button type="button" class="remove-file" id="removeFileBtn" title="Удалить файл">
+                                    ❌
+                                </button>
+                            </div>
+                        </div>
+                        <div id="imagePreviewContainer" class="image-preview" style="display: none;">
+                            <img id="imagePreview" src="" alt="Предпросмотр">
+                        </div>
+                        <div class="file-details">
+                            <div class="file-detail">
+                                <span>📅 Дата: <span id="previewFileDate"></span></span>
+                            </div>
+                            <div class="file-detail">
+                                <span>🔤 Имя: <span id="previewFileOriginalName"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <input type="hidden" name="button_value" id="buttonValue" value="">
                     <button type="submit" class="submit-btn" id="submitBtn" disabled>
                         Отправить
@@ -133,96 +161,6 @@
                                 </button>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <div class="file-info">
-                                    <svg class="file-icon" viewBox="0 0 24 24">
-                                        <path d="M21 19v-2h-4v2h4zm0-6v-2h-8v2h8zm0-6V5h-8v2h8zm-10 6v2H3v-2h8zm0 6v2H3v-2h8zm0-12v2H3V7h8z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="file-name">скриншот_кода.png</div>
-                                        <div class="file-date">1.1 MB</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>18.03.2026</td>
-                            <td>MiniLM</td>
-                            <td>
-                                <span class="similarity-badge similarity-medium">67% уникально</span>
-                            </td>
-                            <td>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="file-info">
-                                    <svg class="file-icon" viewBox="0 0 24 24">
-                                        <path d="M8 3a2 2 0 0 0-2 2v4a2 2 0 0 1-2 2H3v2h1a2 2 0 0 1 2 2v4a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-4a2 2 0 0 1 2-2h1v-2h-1a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2H8z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="file-name">parser.py</div>
-                                        <div class="file-date">156 KB</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>17.03.2026</td>
-                            <td>LaBSE</td>
-                            <td>
-                                <span class="similarity-badge similarity-low">45% уникально</span>
-                            </td>
-                            <td>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="file-info">
-                                    <svg class="file-icon" viewBox="0 0 24 24">
-                                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
-                                    </svg>
-                                    <div>
-                                        <div class="file-name">курсовая.docx</div>
-                                        <div class="file-date">3.2 MB</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>15.03.2026</td>
-                            <td>Sentence-BERT</td>
-                            <td>
-                                <span class="similarity-badge similarity-high">95% уникально</span>
-                            </td>
-                            <td>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
-                                    </svg>
-                                </button>
-                                <button class="action-btn">
-                                    <svg viewBox="0 0 24 24">
-                                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                                    </svg>
-                                </button>
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
 
@@ -257,53 +195,301 @@
             </div>
         </div>
     </footer>
+        
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const buttons = document.querySelectorAll('.choice-btn');
-            const selectedNumberSpan = document.getElementById('selectedNumber');
             const buttonValueInput = document.getElementById('buttonValue');
             const submitBtn = document.getElementById('submitBtn');
+            const fileInput = document.getElementById('fileInput');
+            const quickUploadBox = document.getElementById('quickUploadBox');
+            const filePreview = document.getElementById('filePreview');
+            const removeFileBtn = document.getElementById('removeFileBtn');
+            const allowedTypesHint = document.getElementById('allowedTypesHint');
             
-            let activeButton = null;
+            let currentButtonValue = null;
+            
+            // Разрешенные типы файлов для разных кнопок
+            const textFileTypes = ['txt', 'docx', 'pdf', 'py'];
+            const imageFileTypes = ['jpg', 'jpeg', 'png', 'img'];
+            
+            // Функция обновления accept атрибута в зависимости от выбранной кнопки
+            function updateFileAccept(buttonValue) {
+                let acceptTypes = [];
+                let hintText = '';
+                
+                if (buttonValue === '4') {
+                    acceptTypes = imageFileTypes.map(ext => `.${ext}`);
+                    hintText = '.jpg, .jpeg, .png, .img';
+                } else if (buttonValue === '1' || buttonValue === '2' || buttonValue === '3') {
+                    acceptTypes = textFileTypes.map(ext => `.${ext}`);
+                    hintText = '.txt, .docx, .pdf, .py';
+                }
+                
+                fileInput.setAttribute('accept', acceptTypes.join(','));
+                allowedTypesHint.textContent = hintText;
+            }
+            
+            // Функция форматирования размера файла
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 байт';
+                const k = 1024;
+                const sizes = ['байт', 'КБ', 'МБ', 'ГБ'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // Функция получения типа файла
+            function getFileType(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                const types = {
+                    'txt': 'Текстовый файл',
+                    'docx': 'Word документ',
+                    'pdf': 'PDF документ',
+                    'py': 'Python скрипт',
+                    'jpg': 'Изображение',
+                    'jpeg': 'Изображение',
+                    'png': 'Изображение',
+                    'img': 'Изображение'
+                };
+                return types[ext] || 'Файл';
+            }
+            
+            // Функция получения иконки
+            function getFileIcon(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                const icons = {
+                    'txt': '📄',
+                    'docx': '📝',
+                    'pdf': '📑',
+                    'py': '🐍',
+                    'jpg': '🖼️',
+                    'jpeg': '🖼️',
+                    'png': '🖼️',
+                    'img': '🖼️'
+                };
+                return icons[ext] || '📎';
+            }
+            
+            // Функция проверки, является ли файл изображением
+            function isImageFile(filename) {
+                const ext = filename.split('.').pop().toLowerCase();
+                return ['jpg', 'jpeg', 'png', 'img'].includes(ext);
+            }
+            
+            // Функция проверки типа файла для выбранной кнопки
+            function isValidFileTypeForButton(filename, buttonValue) {
+                const ext = filename.split('.').pop().toLowerCase();
+                
+                if (buttonValue === '4') {
+                    return imageFileTypes.includes(ext);
+                } else if (buttonValue === '1' || buttonValue === '2' || buttonValue === '3') {
+                    return textFileTypes.includes(ext);
+                }
+                return false;
+            }
+            
+            // Функция отображения предпросмотра файла
+            function displayFilePreview(file) {
+                if (!file) {
+                    filePreview.style.display = 'none';
+                    return;
+                }
+                
+                // Проверка типа файла для выбранной кнопки
+                if (!isValidFileTypeForButton(file.name, currentButtonValue)) {
+                    let allowedTypes = currentButtonValue === '4' ? 'изображения (jpg, jpeg, png, img)' : 'текстовые документы (txt, docx, pdf, py)';
+                    alert(`Для выбранной кнопки ${currentButtonValue} разрешены только ${allowedTypes}`);
+                    fileInput.value = '';
+                    return;
+                }
+                
+                const fileName = file.name;
+                const fileSize = formatFileSize(file.size);
+                const fileType = getFileType(fileName);
+                const fileDate = new Date(file.lastModified).toLocaleString('ru-RU');
+                
+                document.getElementById('previewFileName').textContent = fileName;
+                document.getElementById('previewFileSize').textContent = fileSize;
+                document.getElementById('previewFileType').textContent = fileType;
+                document.getElementById('previewFileDate').textContent = fileDate;
+                document.getElementById('previewFileOriginalName').textContent = fileName;
+                document.getElementById('fileIcon').textContent = getFileIcon(fileName);
+                
+                // Показываем предпросмотр для изображений
+                const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+                const imagePreview = document.getElementById('imagePreview');
+                
+                if (isImageFile(fileName)) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreviewContainer.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreviewContainer.style.display = 'none';
+                }
+                
+                filePreview.style.display = 'block';
+                filePreview.style.animation = 'slideIn 0.3s ease';
+                
+                checkSubmitButton();
+            }
+            
+            // Функция удаления файла
+            function removeFile() {
+                fileInput.value = '';
+                filePreview.style.display = 'none';
+                document.getElementById('imagePreviewContainer').style.display = 'none';
+                checkSubmitButton();
+            }
             
             // Функция активации кнопки
             function activateButton(button) {
-                // Убираем активный класс у всех кнопок
                 buttons.forEach(btn => {
                     btn.classList.remove('active');
                 });
                 
-                // Добавляем активный класс выбранной кнопке
                 button.classList.add('active');
-                
-                // Получаем значение
                 const value = button.getAttribute('data-value');
-                
-                // Обновляем отображение
-                selectedNumberSpan.textContent = value;
+                currentButtonValue = value;
                 buttonValueInput.value = value;
                 
-                // Активируем кнопку отправки
-                submitBtn.disabled = false;
+                // Обновляем разрешенные типы файлов
+                updateFileAccept(value);
                 
-                // Сохраняем активную кнопку
-                activeButton = button;
+                // Если уже выбран файл, проверяем его соответствие новой кнопке
+                if (fileInput.files && fileInput.files.length > 0) {
+                    const currentFile = fileInput.files[0];
+                    if (!isValidFileTypeForButton(currentFile.name, value)) {
+                        removeFile();
+                        let allowedTypes = value === '4' ? 'изображения (jpg, jpeg, png, img)' : 'текстовые документы (txt, docx, pdf, py)';
+                        alert(`Тип файла не подходит для выбранной кнопки. Для кнопки ${value} разрешены только ${allowedTypes}`);
+                    }
+                }
+                
+                checkSubmitButton();
+            }
+            
+            // Функция проверки возможности отправки
+            function checkSubmitButton() {
+                const isButtonSelected = buttonValueInput.value !== '';
+                const isFileSelected = fileInput.files && fileInput.files.length > 0;
+                submitBtn.disabled = !(isButtonSelected && isFileSelected);
+            }
+            
+            // Обработка клика на поле загрузки
+            if (quickUploadBox) {
+                quickUploadBox.addEventListener('click', () => {
+                    if (!currentButtonValue) {
+                        alert('Пожалуйста, сначала выберите кнопку');
+                        return;
+                    }
+                    fileInput.click();
+                });
+                
+                // Drag and drop
+                quickUploadBox.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    quickUploadBox.style.borderColor = '#667eea';
+                    quickUploadBox.style.background = 'rgba(102, 126, 234, 0.1)';
+                });
+                
+                quickUploadBox.addEventListener('dragleave', () => {
+                    quickUploadBox.style.borderColor = '#dee2e6';
+                    quickUploadBox.style.background = '#f8f9fa';
+                });
+                
+                quickUploadBox.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    quickUploadBox.style.borderColor = '#dee2e6';
+                    quickUploadBox.style.background = '#f8f9fa';
+                    
+                    if (!currentButtonValue) {
+                        alert('Пожалуйста, сначала выберите кнопку');
+                        return;
+                    }
+                    
+                    const file = e.dataTransfer.files[0];
+                    if (file) {
+                        if (!isValidFileTypeForButton(file.name, currentButtonValue)) {
+                            let allowedTypes = currentButtonValue === '4' ? 'изображения (jpg, jpeg, png, img)' : 'текстовые документы (txt, docx, pdf, py)';
+                            alert(`Для выбранной кнопки ${currentButtonValue} разрешены только ${allowedTypes}`);
+                            return;
+                        }
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                        displayFilePreview(file);
+                    }
+                });
+            }
+            
+            // Обработка выбора файла
+            if (fileInput) {
+                fileInput.addEventListener('change', function() {
+                    if (!currentButtonValue) {
+                        alert('Пожалуйста, сначала выберите кнопку');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    if (this.files && this.files[0]) {
+                        if (!isValidFileTypeForButton(this.files[0].name, currentButtonValue)) {
+                            let allowedTypes = currentButtonValue === '4' ? 'изображения (jpg, jpeg, png, img)' : 'текстовые документы (txt, docx, pdf, py)';
+                            alert(`Для выбранной кнопки ${currentButtonValue} разрешены только ${allowedTypes}`);
+                            this.value = '';
+                            return;
+                        }
+                        displayFilePreview(this.files[0]);
+                    } else {
+                        removeFile();
+                    }
+                });
+            }
+            
+            // Обработка удаления файла
+            if (removeFileBtn) {
+                removeFileBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    removeFile();
+                });
             }
             
             // Обработка нажатия на кнопки
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    activateButton(this);
+            if (buttons) {
+                buttons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        activateButton(this);
+                    });
                 });
-            });
+            }
             
-            // Предотвращение отправки пустой формы
-            document.getElementById('choiceForm').addEventListener('submit', function(e) {
-                if (!buttonValueInput.value) {
-                    e.preventDefault();
-                    alert('Пожалуйста, выберите кнопку');
-                }
-            });
+            // Предотвращение отправки без выбора
+            const choiceForm = document.getElementById('choiceForm');
+            if (choiceForm) {
+                choiceForm.addEventListener('submit', function(e) {
+                    if (!buttonValueInput.value) {
+                        e.preventDefault();
+                        alert('Пожалуйста, выберите кнопку');
+                        return false;
+                    }
+                    
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        e.preventDefault();
+                        alert('Пожалуйста, загрузите файл');
+                        return false;
+                    }
+                    
+                    if (!isValidFileTypeForButton(fileInput.files[0].name, currentButtonValue)) {
+                        e.preventDefault();
+                        let allowedTypes = currentButtonValue === '4' ? 'изображения (jpg, jpeg, png, img)' : 'текстовые документы (txt, docx, pdf, py)';
+                        alert(`Для выбранной кнопки ${currentButtonValue} разрешены только ${allowedTypes}`);
+                        return false;
+                    }
+                });
+            }
         });
     </script>
 </body>
