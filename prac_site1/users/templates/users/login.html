@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Антиплагиат</title>
+    <link rel="stylesheet" href="{% static 'users/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="{% url 'main:main' %}" class="logo">Антиплагиат</a>
+            <nav class="nav">
+                <a href="{% url 'main:main' %}" class="btn btn-outline">На главную</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Вход</h1>
+                <p>Войдите в свой аккаунт</p>
+            </div>
+            
+            <form class="auth-form" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    {{form.username}}
+                    {% comment %} <input type="email" id="email" name="email" placeholder="example@mail.ru" required> {% endcomment %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    {{form.password}}
+                    {% comment %} <input type="password" id="password" name="password" placeholder="••••••••" required> {% endcomment %}
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="#">Забыли пароль?</a>
+                </div>
+                
+                <button type="submit" class="auth-btn">Войти</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+                <a href="{% url 'main:main' %}" class="back-link">← Вернуться на главную</a>
+            </div>
+        </div>
+    </main>
+
+   <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h4>О проекте</h4>
+                    <a href="#how-it-works">Как это работает</a>
+                    <a href="#contacts">Контакты</a>
+                </div>
+                
+                <div>
+                    <h4>Наш Telegram бот</h4>
+                    <div class="qr-container">
+                        <img src="./cute-cat_113255-210139.avif" alt="Telegram бот QR код" class="qr-code">
+                        <p class="qr-text">@bot_antiplagiat</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 Антиплагиат. 
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

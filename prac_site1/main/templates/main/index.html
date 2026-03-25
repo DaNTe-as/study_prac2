@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Антиплагиат | Проверка текстов, кода и изображений</title>
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="{% url 'main:main' %}" class="logo">Антиплагиат</a>
+            <nav class="nav">
+                <a href="{% url 'users:login' %}" class="btn btn-outline">Войти</a>
+                <a href="{% url 'users:register' %}" class="btn btn-primary">Регистрация</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <h1>Проверка на плагиат</h1>
+                <p>Тексты, код и изображения за секунды</p>
+                <div class="auth-required">
+                    <div class="auth-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        </svg>
+                    </div>
+                    <h2>🔐 Доступ только для авторизованных пользователей</h2>
+                    <p>Проверка документов на плагиат доступна только в личном кабинете.<br>
+                    Войдите или зарегистрируйтесь, чтобы начать работу.</p>
+                    <div class="auth-buttons">
+                        <a href="{% url 'users:login' %}" class="btn btn-outline">Войти</a>
+                        <a href="{% url 'users:register' %}" class="btn btn-primary">Регистрация</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <section class="how-it-works" id="how-it-works">
+            <div class="container">
+                <h2 class="section-title">Как это работает</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Загрузите документ</h3>
+                        <p>Поддерживаем Word, изображения и Python-код</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Разбиваем на чанки</h3>
+                        <p>Текст сегментируется для точного сравнения</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Сравниваем с базой</h3>
+                        <p>Используем эмбеддинги и косинусное сходство</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Получите отчёт</h3>
+                        <p>Детальный анализ с процентами совпадений</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h4>О проекте</h4>
+                    <a href="#how-it-works">Как это работает</a>
+                </div>
+                
+                <div>
+                    <h4>Наш Telegram бот</h4>
+                    <div class="qr-container">
+                        <img src="./cute-cat_113255-210139.avif" alt="Telegram бот QR код" class="qr-code">
+                        <p class="qr-text">@antiplagiat_bot</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 Антиплагиат. 
+            </div>
+        </div>
+    </footer>
+
+    <!-- Скрипты -->
+    <script>
+        // Убираем обработчики загрузки файлов, так как они больше не нужны на главной
+        // Но оставляем для совместимости, чтобы не было ошибок в консоли
+        
+        const uploadBox = document.getElementById('uploadBox');
+        const fileInput = document.getElementById('fileInput');
+        
+        if (uploadBox && fileInput) {
+            // Удаляем обработчики событий, чтобы они не мешали
+            uploadBox.style.cursor = 'default';
+            uploadBox.style.pointerEvents = 'none';
+        }
+    </script>
+</body>
+</html>

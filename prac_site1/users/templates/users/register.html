@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация | Антиплагиат</title>
+    <link rel="stylesheet" href="{% static 'users/css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <a href="{% url 'main:main' %}" class="logo">Антиплагиат</a>
+            <nav class="nav">
+                <a href="{% url 'main:main' %}" class="btn btn-outline">На главную</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="auth-page">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Регистрация</h1>
+                <p>Создайте новый аккаунт</p>
+            </div>
+            
+            <form class="auth-form" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">Имя</label>
+                    {{form.first_name}}
+                    {% comment %} <input type="text" id="name" name="name" placeholder="Иван Иванов" required> {% endcomment %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    {{form.email}}
+                    {% comment %} <input type="email" id="email" name="email" placeholder="example@mail.ru" required> {% endcomment %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    {{form.password1}}
+                    {% comment %} <input type="password" id="password" name="password" placeholder="Создайте пароль" required> {% endcomment %}
+                    <div class="password-hint">Минимум 8 символов</div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirm_password">Подтверждение пароля</label>
+                    {{form.password2}}
+                    {% comment %} <input type="password" id="confirm_password" name="confirm_password" placeholder="Повторите пароль" required> {% endcomment %}
+                </div>
+                
+                <button type="submit" class="auth-btn">Зарегистрироваться</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Уже есть аккаунт? <a href="{% url 'users:login' %}">Войти</a></p>
+                <a href="{% url 'main:main' %}" class="back-link">← Вернуться на главную</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <h4>О проекте</h4>
+                    <a href="#how-it-works">Как это работает</a>
+                    <a href="#contacts">Контакты</a>
+                </div>
+                
+                <div>
+                    <h4>Наш Telegram бот</h4>
+                    <div class="qr-container">
+                        <img src="./cute-cat_113255-210139.avif" alt="Telegram бот QR код" class="qr-code">
+                        <p class="qr-text">@bot_antiplagiat</p>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 Антиплагиат. 
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

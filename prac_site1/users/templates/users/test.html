@@ -1,0 +1,283 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор кнопки</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .card-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .card-header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .card-body {
+            padding: 40px;
+        }
+
+        .user-info {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+
+        .user-info p {
+            color: #495057;
+            font-size: 16px;
+        }
+
+        .user-info strong {
+            color: #667eea;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .choice-btn {
+            width: 120px;
+            height: 120px;
+            font-size: 48px;
+            font-weight: bold;
+            border: 3px solid #e9ecef;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #495057;
+            font-family: inherit;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .choice-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .selected-info {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .selected-info p {
+            font-size: 18px;
+            color: #495057;
+        }
+
+        .selected-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #667eea;
+            margin-left: 10px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 640px) {
+            .choice-btn {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+            
+            .card-body {
+                padding: 25px;
+            }
+            
+            .selected-number {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1>Выберите кнопку</h1>
+                <p>Нажмите на одну из кнопок ниже</p>
+            </div>
+            <div class="card-body">
+                <!-- Информация о пользователе -->
+                <div class="user-info">
+                    <p>👤 Вы авторизованы как: <strong>{{ request.user.email }}</strong> ({{ request.user.first_name }})</p>
+                </div>
+
+                <!-- Сообщения -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Кнопки выбора -->
+                <div class="buttons-container">
+                    <button type="button" class="choice-btn" data-value="1">1</button>
+                    <button type="button" class="choice-btn" data-value="2">2</button>
+                    <button type="button" class="choice-btn" data-value="3">3</button>
+                    <button type="button" class="choice-btn" data-value="4">4</button>
+                </div>
+
+                <!-- Отображение выбранной кнопки -->
+                <div class="selected-info">
+                    <p>Активная кнопка: <span class="selected-number" id="selectedNumber">—</span></p>
+                </div>
+
+                <!-- Форма отправки -->
+                <form method="post" action="{% url 'users:save_button_choice' %}" id="choiceForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="button_value" id="buttonValue" value="">
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                        Отправить
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.choice-btn');
+            const selectedNumberSpan = document.getElementById('selectedNumber');
+            const buttonValueInput = document.getElementById('buttonValue');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            let activeButton = null;
+            
+            // Функция активации кнопки
+            function activateButton(button) {
+                // Убираем активный класс у всех кнопок
+                buttons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Добавляем активный класс выбранной кнопке
+                button.classList.add('active');
+                
+                // Получаем значение
+                const value = button.getAttribute('data-value');
+                
+                // Обновляем отображение
+                selectedNumberSpan.textContent = value;
+                buttonValueInput.value = value;
+                
+                // Активируем кнопку отправки
+                submitBtn.disabled = false;
+                
+                // Сохраняем активную кнопку
+                activeButton = button;
+            }
+            
+            // Обработка нажатия на кнопки
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    activateButton(this);
+                });
+            });
+            
+            // Предотвращение отправки пустой формы
+            document.getElementById('choiceForm').addEventListener('submit', function(e) {
+                if (!buttonValueInput.value) {
+                    e.preventDefault();
+                    alert('Пожалуйста, выберите кнопку');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
